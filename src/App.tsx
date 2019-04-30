@@ -2,6 +2,8 @@ import React from "react";
 import { Store } from "./Store";
 import { IEpisode, IAction } from "./interfaces";
 
+const EpisodeList = React.lazy<any>(() => import("./EpisodesList"));
+
 export default function App(): JSX.Element {
     const { state, dispatch } = React.useContext(Store);
 
@@ -38,6 +40,12 @@ export default function App(): JSX.Element {
         return dispatch(dispatchObj);
     };
 
+    const props = {
+        episodes: state.episodes,
+        toggleFavAction,
+        favourites: state.favourites
+    };
+
     console.log(state);
 
     return (
@@ -49,32 +57,11 @@ export default function App(): JSX.Element {
                 </div>
                 <div>Favourite(s): {state.favourites.length}</div>
             </header>
-            <section className="episode-layout">
-                {state.episodes.map((episode: IEpisode) => {
-                    return (
-                        <section key={episode.id} className="episode-box">
-                            <img src={episode.image.medium} alt={`${episode.name}`} />
-                            <div>{episode.name}</div>
-                            <section>
-                                <div>
-                                    Season:{episode.season} {episode.number}
-                                </div>
-                                <button
-                                    type="button"
-                                    onClick={() => toggleFavAction(episode)}
-                                >
-                                    {/* {state.favourites.includes(episode) ? "Unfav" : "Fav"} */}
-                                    {state.favourites.find(
-                                        (fav: IEpisode) => fav.id === episode.id
-                                    )
-                                        ? "Unfav"
-                                        : "Fav"}
-                                </button>
-                            </section>
-                        </section>
-                    );
-                })}
-            </section>
+            <React.Suspense fallback={<div>Loading</div>}>
+                <section className="episode-layout">
+                    <EpisodeList {...props} />
+                </section>
+            </React.Suspense>
         </React.Fragment>
     );
 }
