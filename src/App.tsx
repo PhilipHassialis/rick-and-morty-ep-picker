@@ -13,7 +13,7 @@ export default function App(props: any): JSX.Element {
                     <p>Pick your favourite episode</p>
                 </div>
                 <div>
-                    <Link to="/">Home</Link>
+                    <Link to="/">Home</Link> |{" "}
                     <Link to="/faves">Favourite(s): {state.favourites.length}</Link>
                 </div>
             </header>
